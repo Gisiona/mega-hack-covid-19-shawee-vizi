@@ -21,7 +21,15 @@ public class EstabelecimentoProcessor {
 	public EstabebelecimentoResponseDTO listaEstabelecimentoPorId(Long id) {
 		Optional<Estabelecimento> response = estabelecimentoRepository.findById(id);
 		EstabebelecimentoResponseDTO dto = new EstabebelecimentoResponseDTO();
-		
+		dto.setId(123L);
+		dto.setCep("09910-040");
+		dto.setNomeFantasia("Padaria Da VIZI");
+		dto.setRazaoSocial("Padaria Da VIZI");
+		dto.setNomeResponsavel("Gisiona Costa");
+		dto.setEnderecoCompleto("Rua Gaspar Ricardo, 309");
+		dto.setTelefone("11-5767-0854");
+		dto.setWhatsapp("1197951-0575");
+		dto.setEmail("padaria.vizi@gmail.com.br");
 		return dto;		
 	}
 
@@ -29,6 +37,17 @@ public class EstabelecimentoProcessor {
 		EstabebelecimentoResponseDTO dto = new EstabebelecimentoResponseDTO();
 		List<EstabebelecimentoResponseDTO> dtos = new ArrayList<EstabebelecimentoResponseDTO>();
 		List<Estabelecimento> lista = estabelecimentoRepository.findAll();
+		
+		dto.setId(123L);
+		dto.setCep("09910-040");
+		dto.setNomeFantasia("Padaria Da VIZI");
+		dto.setRazaoSocial("Padaria Da VIZI");
+		dto.setNomeResponsavel("Gisiona Costa");
+		dto.setEnderecoCompleto("Rua Gaspar Ricardo, 309");
+		dto.setTelefone("11-5767-0854");
+		dto.setWhatsapp("1197951-0575");
+		dto.setEmail("padaria.vizi@gmail.com.br");
+		dtos.add(dto);
 		return dtos;
 	}
 
