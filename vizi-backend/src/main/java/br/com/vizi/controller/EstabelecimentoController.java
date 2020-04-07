@@ -1,6 +1,5 @@
 package br.com.vizi.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class EstabelecimentoController {
 	}
 	
 	@GetMapping("/{id}")
-	public EstabebelecimentoResponseDTO listaEstabelecimentoPorId(@Param("id") Integer id){		
+	public EstabebelecimentoResponseDTO listaEstabelecimentoPorId(@Param("id") Long id){		
 		return estabelecimentoProcessor.listaEstabelecimentoPorId(id);
 	}
 	
