@@ -1,0 +1,275 @@
+markers = [];
+// const btnNext = document.querySelector(".btnNext");
+// const errorMsg = document.querySelector(".serverError");
+
+function initMap() {
+  var input = document.getElementById("pac-input");
+  var autocomplete = new google.maps.places.Autocomplete(input, {
+    types: ["address"],
+    componentRestrictions: { country: "br" },
+  });
+  var input2 = document.getElementById("pac-input2");
+  var autocomplete2 = new google.maps.places.Autocomplete(input2, {
+    componentRestrictions: { country: "br" },
+  });
+  var geocoder = new google.maps.Geocoder();
+
+  btnNext.addEventListener("click", () => {
+    btnNext.disabled = false;
+
+    loadding.classList.remove("inactive");
+    steps.forEach((step, index) => {
+      if (step.classList.contains("fade-in") && step.id === "step3") {
+        sendAddress(index, step.id);
+      }
+    });
+  });
+  input.addEventListener("input", () => {
+    if (sessionStorage.getItem("selectedFrom")) {
+      sessionStorage.removeItem("selectedFrom");
+    }
+  });
+
+  google.maps.event.addListener(autocomplete, "place_changed", function () {
+    btnNext.disabled = false;
+    geocodeAddress(geocoder, autocomplete.getPlace().formatted_address);
+    sessionStorage.setItem(
+      "selectedFrom",
+      JSON.stringify({
+        selected: true,
+        address: autocomplete.getPlace().formatted_address,
+      })
+    );
+  });
+
+  google.maps.event.addListener(autocomplete2, "place_changed", function () {
+    let deliveryRegions = window.sessionStorage.getItem("deliveryRegions")
+      ? JSON.parse(window.sessionStorage.getItem("deliveryRegions"))
+      : [];
+    const regionsSection = document.querySelector("#regions");
+    const allRegions = document.querySelectorAll(".regions");
+    if (
+      !deliveryRegions.filter(
+        (x) => x == autocomplete2.getPlace().formatted_address
+      ).length &&
+      allRegions.length <= 9
+    ) {
+      deliveryRegions.push(autocomplete2.getPlace().formatted_address);
+      // window.sessionStorage.setItem('deliveryRegions', JSON.stringify(deliveryRegions))
+      const regionsDiv = document.createElement("div");
+
+      regionsDiv.classList.add("regions");
+      regionsDiv.innerHTML = `
+                    <span class="region">${
+                      autocomplete2.getPlace().formatted_address
+                    }</span><span class="deleteRegion">x</span>
+                `;
+      regionsSection.appendChild(regionsDiv);
+      input2.value = "";
+      const deleteRegionArr = document.querySelectorAll(".deleteRegion");
+      window.sessionStorage.setItem(
+        "deliveryRegions",
+        JSON.stringify(deliveryRegions)
+      );
+      deleteRegionArr.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const region = e.target.parentNode;
+          region.remove();
+          const newDeliveryRegions = regionsSection.querySelectorAll(
+            "div.regions"
+          );
+          let newRegionsArr = [];
+          newDeliveryRegions.forEach((dr) => {
+            newRegionsArr.push(dr.querySelector("span").innerHTML);
+          });
+          window.sessionStorage.setItem(
+            "deliveryRegions",
+            JSON.stringify(newRegionsArr)
+          );
+        });
+      });
+    }
+  });
+}
+
+function geocodeAddress(geocoder, address) {
+  geocoder.geocode({ address: address }, function (results, status) {
+    console.log(results);
+    if (status === "OK") {
+      fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${results[0].formatted_address}&key=AIzaSyCDwF3CUgAWqwNLoDJb6MibNdarNz_lzLc`
+      )
+        .then((data) => data.json())
+        .then((data) => {
+          console.log(data);
+          window.sessionStorage.setItem(
+            "location",
+            JSON.stringify(data.results[0].geometry.location)
+          );
+        });
+    } else {
+      window.sessionStorage.removeItem("location");
+      window.sessionStorage.removeItem("step3");
+      loadding.classList.add("inactive");
+    }
+  });
+}
+
+function reverseGeocoding(geocoder, latlong) {
+  var input = latlong;
+  var latlngStr = input.split(",", 2);
+  var latlng = { lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1]) };
+  geocoder.geocode({ location: latlng }, function (results, status) {
+    if (status === "OK" && results.length) {
+      document.getElementById("pac-input").value = results[0].formatted_address;
+      geocodeAddress(geocoder, results[0].formatted_address);
+    } else {
+      window.alert("No results found");
+    }
+  });
+}
+
+showErrorMsg = (err) => {
+  for (const key in err) {
+    const p = document.createElement("p");
+    p.classList.add("col-12");
+    p.innerHTML = err[key][0];
+    error;
+    errorMsg.appendChild(p);
+  }
+  errorMsg.classList.remove("inactive");
+  errorMsg.classList.add("fade-in");
+  setTimeout(() => {
+    errorMsg.classList.remove("fade-in");
+    errorMsg.classList.add("fade-out");
+  }, 8000);
+  setTimeout(() => {
+    errorMsg.classList.add("inactive");
+    errorMsg.classList.remove("fade-out");
+    errorMsg.innerHTML = "";
+  }, 8500);
+};
+
+sendAddress = (index, lsName) => {
+  const formData = new FormData(forms[index]);
+  let body = {};
+  for (const pair of formData.entries()) {
+    body[pair[0]] = pair[1];
+  }
+  if (!window.sessionStorage.getItem("addressInserted")) {
+    if (sessionStorage.getItem("selectedFrom")) {
+      console.log(sessionStorage.getItem("selectedFrom"));
+
+      const location = JSON.parse(window.sessionStorage.getItem("location"));
+      body = {
+        lat: location.lat,
+        lng: location.lng,
+        description: body.address,
+        complement: body.complement,
+      };
+      fetch(
+        `${apiAddress}${JSON.parse(
+          window.sessionStorage.getItem("guid")
+        )}/address/`,
+        {
+          body: JSON.stringify(body),
+          method: "POST",
+          headers: {
+            Authorization: authorizationToken,
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Headers": "Content-Type",
+          },
+        }
+      )
+        .then((data) => {
+          if (!data.ok) {
+            console.log("1");
+
+            eraseStep(lsName);
+            showErrorMsg({
+              error: ["Por favor escolha um endereço valido!!"],
+            });
+            throw Error(data.statusText);
+          }
+          return data.json();
+        })
+        .then((data) => {
+          loadding.classList.add("inactive");
+          setsessionStorage(body, lsName);
+          window.sessionStorage.setItem(
+            "addressInserted",
+            JSON.stringify(true)
+          );
+          nextStepFunc();
+        })
+        .catch((err) => {
+          console.error(err);
+          loadding.classList.add("inactive");
+        });
+    } else {
+      console.log("Error");
+
+      showErrorMsg({
+        error: ["Por favor escolha um endereço da lista!!"],
+      });
+      loadding.classList.add("inactive");
+    }
+  } else {
+    if (sessionStorage.getItem("selectedFrom")) {
+      console.log(sessionStorage.getItem("selectedFrom"));
+      try {
+        const location = JSON.parse(window.sessionStorage.getItem("location"));
+        body = {
+          lat: location.lat,
+          lng: location.lng,
+          description: body.address,
+          complement: body.complement,
+        };
+        fetch(
+          `${apiAddress}${JSON.parse(
+            window.sessionStorage.getItem("guid")
+          )}/address/`,
+          {
+            body: JSON.stringify(body),
+            method: "PUT",
+            headers: {
+              Authorization: authorizationToken,
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          }
+        )
+          .then((data) => {
+            if (!data.ok) {
+              eraseStep(lsName);
+              showErrorMsg({
+                error: ["Por favor escolha um endereço valido!!"],
+              });
+              throw Error(data.statusText);
+            }
+            return data.json();
+          })
+          .then((data) => {
+            loadding.classList.add("inactive");
+            setsessionStorage(body, lsName);
+            nextStepFunc();
+          })
+          .catch((err) => {
+            console.error(err);
+            loadding.classList.add("inactive");
+          });
+      } catch (error) {
+        eraseStep(lsName);
+        showErrorMsg({ error: ["Por favor escolha um endereço valido!!"] });
+        loadding.classList.add("inactive");
+      }
+    } else {
+      console.log("Error");
+
+      showErrorMsg({
+        error: ["Por favor escolha um endereço da lista!!"],
+      });
+      loadding.classList.add("inactive");
+    }
+  }
+};

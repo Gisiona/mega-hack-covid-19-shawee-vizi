@@ -1,0 +1,81 @@
+$(document).ready(function () {
+  $(".btnNext").click(function () {
+    if (!$("#cadastroValidar").valid()) {
+      console.log("Formulário inválido");
+      loadding.classList.add("inactive");
+    }
+  });
+
+  $(".btnNext").click(function () {
+    if (!$("#categoriaValidar").valid()) {
+      console.log("Formulário inválido");
+      loadding.classList.add("inactive");
+    }
+  });
+
+  $(".btnNext").click(function () {
+    if (!$("#localizacaoValidar").valid()) {
+      console.log("Formulário inválido");
+      loadding.classList.add("inactive");
+    }
+  });
+
+  $(".btnNext").click(function () {
+    if (!$("#cpfCnpjValidar").valid()) {
+      console.log("Formulário inválido");
+      loadding.classList.add("inactive");
+    }
+  });
+
+  $("#cadastroValidar").validate({
+    rules: {
+      name: { required: true },
+      mobile: { required: true },
+      email: { required: true, email: true },
+    },
+    messages: {
+      name: "Nome é obrigatório",
+
+      mobile: "Celular é obrigatório",
+
+      email: {
+        required: "E-mail é obrigatório",
+        email: "Digite um e-mail válido",
+      },
+    },
+  });
+
+  $("#categoriaValidar").validate({
+    rules: {
+      cnae_value: { required: true },
+    },
+    messages: {
+      cnae_value: {
+        required: "Categoria / Segmento é obrigatório",
+      },
+    },
+  });
+
+  $("#localizacaoValidar").validate({
+    rules: {
+      address: { required: true },
+    },
+    messages: {
+      address: {
+        required: "Endereço é obrigatório",
+      },
+    },
+  });
+
+  $("#cpfCnpjValidar").validate({
+    rules: {
+      document: { required: true },
+      about: { required: true },
+    },
+    messages: {
+      document: "CPF ou CNPJ é obrigatório",
+
+      about: "Descrição do negócio é obrigatório",
+    },
+  });
+});

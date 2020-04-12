@@ -1,0 +1,25 @@
+$(document).ready(function () {
+  $(".menu-mobile a").click(function () {
+    $(".menu-mobile .open-menu").toggleClass("active");
+    $(".navbar-menu").toggleClass("active");
+  });
+
+  function menu_animado(elemento) {
+    $('html, body').animate({
+      scrollTop: $(elemento).offset().top
+    }, 2000);
+  }
+
+  $('.menu-questions').click(function () {
+    menu_animado('#questions');
+  })
+
+  $('.menu-como-funciona').click(function () {
+    menu_animado('#como-funciona');
+  })
+
+  // $('.menu-quero-comprar').click(function(){
+  //     menu_animado('#quero-comprar');
+  // })
+
+})

@@ -1,0 +1,465 @@
+const steps = document.querySelectorAll(".steps");
+const stepsDots = document.querySelectorAll(".pagination-dots ul li span");
+const controller = document.querySelector(".controller");
+const btnNext = document.querySelector(".btnNext");
+const btnPrev = document.querySelector(".btnPrev");
+btnPrev.disabled = true;
+btnNext.disabled = false;
+const forms = document.querySelectorAll("form");
+const complemento = document.querySelector("#complemento");
+const address = document.getElementById("pac-input");
+const authorizationToken = "Token 77412135cd85342f69483fe13c8ffce419b4d7aa";
+const apiAddress = "https://api.pertinhodecasa.com.br/api/seller/";
+const loadding = document.querySelector(".loadding");
+const errorMsg = document.querySelector(".serverError");
+
+const inputs = document.querySelectorAll("#cadastroValidar input");
+
+forms.forEach((form) => {
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+});
+
+if (window.sessionStorage.getItem("guid")) {
+  steps.forEach((step) => {
+    for (const key in sessionStorage) {
+      if (key === step.id) {
+        const sessionStorageItem = JSON.parse(sessionStorage.getItem(key));
+        for (const lsKey in sessionStorageItem) {
+          if (document.querySelector(`[name="${lsKey}"]`)) {
+            document.querySelector(`[name="${lsKey}"]`).value =
+              sessionStorageItem[lsKey];
+          }
+        }
+      }
+    }
+  });
+}
+
+if (window.sessionStorage.getItem("guid")) {
+  fetch(
+    `${apiAddress}${JSON.parse(
+      window.sessionStorage.getItem("guid")
+    )}/delivery/`,
+    {
+      headers: {
+        Authorization: authorizationToken,
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    }
+  )
+    .then((data) => data.json())
+    .then((data) => {
+      buildRegions();
+      // if (data.length) {
+      //     window.sessionStorage.setItem('deliveryRegions', JSON.stringify(data));
+      //     buildRegions();
+      // }
+    });
+}
+
+btnNext.addEventListener("click", () => {
+  loadding.classList.remove("inactive");
+  steps.forEach((step, index) => {
+    if (step.classList.contains("fade-in")) {
+      sendRequest(index, step.id);
+    }
+  });
+});
+
+btnPrev.addEventListener("click", () => {
+  let prevStep;
+  steps.forEach((step, index) => {
+    if (step.classList.contains("fade-in")) {
+      prevStep = index - 1;
+      if (prevStep < 5 && prevStep >= 0) {
+        btnNext.disabled = false;
+      }
+      if (prevStep <= 0) {
+        btnPrev.disabled = true;
+      }
+      step.classList.remove("fade-in");
+      step.classList.add("fade-out");
+      stepsDots[prevStep + 1].classList.remove("active");
+      stepsDots[prevStep].classList.add("active");
+      setTimeout(() => {
+        step.classList.add("inactive");
+        step.classList.remove("fade-out");
+      }, 1000);
+    }
+  });
+  setTimeout(() => {
+    steps[prevStep].classList.remove("inactive");
+    steps[prevStep].classList.add("fade-in");
+  }, 1000);
+});
+
+buildRegions = () => {
+  let deliveryRegions = window.sessionStorage.getItem("deliveryRegions")
+    ? JSON.parse(window.sessionStorage.getItem("deliveryRegions"))
+    : [];
+  const regionsSection = document.querySelector("#regions");
+  if (deliveryRegions.length) {
+    deliveryRegions.forEach((region) => {
+      const regionsDiv = document.createElement("div");
+      regionsDiv.classList.add("regions");
+      regionsDiv.innerHTML = `
+                <span class="region">${region}</span><span class="deleteRegion">x</span>
+            `;
+      regionsSection.appendChild(regionsDiv);
+      window.sessionStorage.setItem(
+        "deliveryRegions",
+        JSON.stringify(deliveryRegions)
+      );
+    });
+    const deleteRegionArr = document.querySelectorAll(".deleteRegion");
+    deleteRegionArr.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const region = e.target.parentNode;
+        region.remove();
+        const newDeliveryRegions = regionsSection.querySelectorAll(
+          "div.regions"
+        );
+        let newRegionsArr = [];
+        newDeliveryRegions.forEach(async (dr) => {
+          newRegionsArr.push(dr.querySelector("span").innerHTML);
+        });
+        await window.sessionStorage.setItem(
+          "deliveryRegions",
+          JSON.stringify(newRegionsArr)
+        );
+      });
+    });
+  }
+};
+
+setsessionStorage = (body, name) => {
+  window.sessionStorage.setItem(name, JSON.stringify(body));
+};
+
+eraseStep = (stepName) => {
+  window.sessionStorage.removeItem(stepName);
+};
+
+sendRequest = (index, lsName) => {
+  const formData = new FormData(forms[index]);
+  let body = {};
+  for (const pair of formData.entries()) {
+    body[pair[0]] = pair[1];
+  }
+
+  if (body.name && !window.sessionStorage.getItem("guid")) {
+    body.mobile = $('input[name="mobile"]').unmask()[0].value;
+    $('input[name="mobile"]').mask("(00) 00000-0000");
+
+    fetch(`${apiAddress}`, {
+      body: JSON.stringify(body),
+      method: "POST",
+      headers: {
+        Authorization: authorizationToken,
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    })
+      .then((data) => {
+        if (!data.ok) {
+          data.json().then((newData) => {
+            eraseStep(lsName);
+            if (newData) {
+              showErrorMsg(newData);
+            } else {
+              showErrorMsg([{ erro: "Por favou insira informações válidas" }]);
+            }
+          });
+
+          throw Error(data.statusText);
+        }
+        return data.json();
+      })
+      .then((data) => {
+        loadding.classList.add("inactive");
+        window.sessionStorage.setItem("guid", JSON.stringify(data));
+        setsessionStorage(body, lsName);
+        nextStepFunc();
+      })
+      .catch((err) => {
+        console.error(err);
+        loadding.classList.add("inactive");
+      });
+  } else if (body.name) {
+    body.mobile = $('input[name="mobile"]').unmask()[0].value;
+    $('input[name="mobile"]').mask("(00) 00000-0000");
+    fetch(
+      `${apiAddress}${JSON.parse(window.sessionStorage.getItem("guid"))}/`,
+      {
+        body: JSON.stringify(body),
+        method: "PATCH",
+        headers: {
+          Authorization: authorizationToken,
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      }
+    )
+      .then((data) => {
+        if (!data.ok) {
+          data.json().then((newData) => {
+            eraseStep(lsName);
+            if (newData) {
+              showErrorMsg(newData);
+            } else {
+              showErrorMsg([{ erro: "Por favou insira informações válidas" }]);
+            }
+          });
+
+          throw Error(data.statusText);
+        }
+        return data.json();
+      })
+      .then((data) => {
+        loadding.classList.add("inactive");
+        setsessionStorage(body, lsName);
+        nextStepFunc();
+      })
+      .catch((err) => {
+        loadding.classList.add("inactive");
+        console.error(err);
+      });
+  }
+  if (body.cnae_value && window.sessionStorage.getItem("guid")) {
+    setTimeout(() => {
+      body.cnae_id = JSON.parse(window.sessionStorage.getItem("cnae")).id;
+      if (body.cnae_id) {
+        fetch(
+          `${apiAddress}${JSON.parse(
+            window.sessionStorage.getItem("guid")
+          )}/category/`,
+          {
+            body: JSON.stringify({ cnae: body.cnae_id }),
+            method: "POST",
+            headers: {
+              Authorization: authorizationToken,
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Headers": "Content-Type",
+            },
+          }
+        )
+          .then((data) => {
+            if (!data.ok) {
+              data.json().then((newData) => {
+                eraseStep(lsName);
+                if (newData) {
+                  showErrorMsg(newData);
+                } else {
+                  showErrorMsg([
+                    { erro: "Por favou insira informações válidas" },
+                  ]);
+                }
+              });
+
+              throw Error(data.statusText);
+            }
+            return data.json();
+          })
+          .then((data) => {
+            loadding.classList.add("inactive");
+            setsessionStorage(body, lsName);
+            nextStepFunc();
+          })
+          .catch((err) => {
+            console.error(err);
+            loadding.classList.add("inactive");
+          });
+      } else {
+        showErrorMsg({ error: ["Por favor escolha uma opção valida!!"] });
+        loadding.classList.add("inactive");
+      }
+    }, 1000);
+  }
+  if (body.document && window.sessionStorage.getItem("guid")) {
+    body.document = document.querySelector('input[name="document"]').value;
+    body.document = body.document.replace(/\D/g, "");
+    fetch(
+      `${apiAddress}${JSON.parse(window.sessionStorage.getItem("guid"))}/`,
+      {
+        body: JSON.stringify(body),
+        method: "PATCH",
+        headers: {
+          Authorization: authorizationToken,
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Headers": "Content-Type",
+        },
+      }
+    )
+      .then((data) => {
+        if (!data.ok) {
+          data.json().then((newData) => {
+            eraseStep(lsName);
+            if (newData) {
+              showErrorMsg(newData);
+            } else {
+              showErrorMsg([{ erro: "Por favou insira informações válidas" }]);
+            }
+          });
+
+          throw Error(data.statusText);
+        }
+        return data.json();
+      })
+      .then((data) => {
+        loadding.classList.add("inactive");
+        setsessionStorage(body, lsName);
+        nextStepFunc();
+      })
+      .catch((err) => {
+        console.error(err);
+        loadding.classList.add("inactive");
+      });
+  }
+  if (
+    body.regions == "" &&
+    window.sessionStorage.getItem("guid") &&
+    window.sessionStorage.getItem("deliveryRegions")
+  ) {
+    const regions = JSON.parse(
+      window.sessionStorage.getItem("deliveryRegions")
+    );
+    let deliveryRegions = [];
+    regions.forEach((region, index) => {
+      fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${region}&key=AIzaSyCDwF3CUgAWqwNLoDJb6MibNdarNz_lzLc`
+      )
+        .then((data) => {
+          if (!data.ok) {
+            throw Error(response.statusText);
+          }
+          return data.json();
+        })
+        .then((data) => {
+          deliveryRegions.push({
+            lat: data.results[0].geometry.location.lat,
+            lng: data.results[0].geometry.location.lng,
+            description: region,
+          });
+
+          if (index === regions.length - 1) {
+            sendRegions(deliveryRegions, lsName);
+          }
+        })
+        .catch((err) => {
+          showErrorMsg(err);
+          console.error(err);
+          loadding.classList.add("inactive");
+        });
+    });
+  }
+};
+
+nextStepFunc = () => {
+  let actualStep;
+  let nextStep;
+  steps.forEach((step, index) => {
+    let emptyInput = true;
+    if (
+      step.classList.contains("fade-in") &&
+      (emptyInput || document.querySelectorAll(".regions").length)
+    ) {
+      actualStep = index;
+      nextStep = index + 1;
+      if (nextStep > 0 && nextStep <= 5) {
+        btnPrev.disabled = false;
+      }
+      step.classList.remove("fade-in");
+      step.classList.add("fade-out");
+      stepsDots[nextStep - 1].classList.remove("active");
+      stepsDots[nextStep].classList.add("active");
+      setTimeout(() => {
+        step.classList.add("inactive");
+        step.classList.remove("fade-out");
+      }, 500);
+    }
+  });
+  if (nextStep <= 5) {
+    setTimeout(() => {
+      steps[nextStep].classList.add("fade-in");
+      steps[nextStep].classList.remove("inactive");
+    }, 500);
+  }
+  finishStepGA(actualStep);
+};
+
+showErrorMsg = (err) => {
+  for (const key in err) {
+    const p = document.createElement("p");
+    p.classList.add("col-12");
+    p.innerHTML = err[key][0];
+    errorMsg.appendChild(p);
+  }
+  errorMsg.classList.remove("inactive");
+  errorMsg.classList.add("fade-in");
+  setTimeout(() => {
+    errorMsg.classList.remove("fade-in");
+    errorMsg.classList.add("fade-out");
+  }, 8000);
+  setTimeout(() => {
+    errorMsg.classList.add("inactive");
+    errorMsg.classList.remove("fade-out");
+    errorMsg.innerHTML = "";
+  }, 9000);
+};
+
+sendRegions = (body, lsName) => {
+  fetch(
+    `${apiAddress}${JSON.parse(
+      window.sessionStorage.getItem("guid")
+    )}/delivery/`,
+    {
+      body: JSON.stringify(body),
+      method: "POST",
+      headers: {
+        Authorization: authorizationToken,
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    }
+  )
+    .then((data) => {
+      if (!data.ok) {
+        data.json().then((newData) => {
+          eraseStep(lsName);
+          if (newData) {
+            showErrorMsg(newData);
+          } else {
+            showErrorMsg([{ erro: "Por favou insira informações válidas" }]);
+          }
+        });
+
+        throw Error(data.statusText);
+      }
+      return data.json();
+    })
+    .then((data) => {
+      window.sessionStorage.clear();
+      nextStepFunc();
+      controller.classList.add("inactive");
+      loadding.classList.add("inactive");
+    })
+    .catch((err) => {
+      showErrorMsg(err);
+      console.error(err);
+      loadding.classList.add("inactive");
+    });
+};
+
+finishStepGA = (step) => {
+  actions = [
+    "Informações de contato",
+    "Categoria da empresa",
+    "Localização da empresa",
+    "Documento e detalhes",
+    "Finalizou cadastro",
+  ];
+  dataLayer.push({ event: "step-cadastro", nomeStep: actions[step] });
+};
