@@ -1,9 +1,10 @@
 package br.com.vizi.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,27 +14,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.vizi.dto.request.EstabelecimentoRequestDTO;
 import br.com.vizi.dto.response.EstabebelecimentoResponseDTO;
-import br.com.vizi.processor.EstabelecimentoProcessor;
+import br.com.vizi.processor.IEstabelecimentoProcessor;
 
 @RestController
-@RequestMapping("/v1/api/estabelecimento")
+@RequestMapping("/viziapp/v1/estabelecimentos")
+@Transactional(readOnly = true)
 public class EstabelecimentoController {
 
 	@Autowired
-	private EstabelecimentoProcessor estabelecimentoProcessor;
+	private IEstabelecimentoProcessor estabelecimentoProcessor;
 	
 	@GetMapping()
-	public List<EstabebelecimentoResponseDTO> listaEstabelecimentos(){		
+	public List<EstabebelecimentoResponseDTO> listaEstabelecimentos() throws Exception{		
 		return estabelecimentoProcessor.listaEstabelecimentos();
 	}
 	
 	@GetMapping("/{id}")
-	public EstabebelecimentoResponseDTO listaEstabelecimentoPorId(@PathVariable("id") Long id){		
+	public EstabebelecimentoResponseDTO listaEstabelecimentoPorId(@PathVariable("id") Long id) throws Exception{		
 		return estabelecimentoProcessor.listaEstabelecimentoPorId(id);
 	}
 	
 	@PostMapping()
-	public EstabebelecimentoResponseDTO adicionarEstabelecimento(@RequestBody EstabelecimentoRequestDTO request){		
-		return estabelecimentoProcessor.adicionarEstabelecimento(request);
+	public EstabebelecimentoResponseDTO adicionarEstabelecimento(@RequestBody EstabelecimentoRequestDTO request) throws Exception{		
+		return estabelecimentoProcessor.adicionar(request);
+	}
+	
+	@GetMapping("/healthcheck")
+	public String healthcheck(){		
+		return "200 OK";
 	}
 }

@@ -11,26 +11,20 @@ public class EstabebelecimentoResponseDTO {
 	@JsonProperty("codigo")
 	private Long id;
 	
-	@JsonProperty("razao_social")
-	private String razaoSocial;
-	
 	@JsonProperty("nome_fantasia")
 	private String nomeFantasia;
 	
 	@JsonProperty("email")
 	private String email;
-	
-	@JsonProperty("nome_responsavel")
-	private String nomeResponsavel;
-	
-	@JsonProperty("telefone_fixo")
-	private String telefone;
+		
+	@JsonProperty("cnpj_cpf")
+	private String cnpjCpf;
 	
 	@JsonProperty("telefone_whatsapp")
 	private String whatsapp;
-	
-	@JsonProperty("cep_postal")
-	private String cep;
+		
+	@JsonProperty("segmento_negocio")
+	private String segmento;
 	
 	@JsonProperty("endereco_completo")
 	private String enderecoCompleto;
@@ -42,14 +36,6 @@ public class EstabebelecimentoResponseDTO {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getRazaoSocial() {
-		return razaoSocial;
-	}
-
-	public void setRazaoSocial(String razaoSocial) {
-		this.razaoSocial = razaoSocial;
 	}
 
 	public String getNomeFantasia() {
@@ -68,20 +54,12 @@ public class EstabebelecimentoResponseDTO {
 		this.email = email;
 	}
 
-	public String getNomeResponsavel() {
-		return nomeResponsavel;
+	public String getCnpjCpf() {
+		return cnpjCpf;
 	}
 
-	public void setNomeResponsavel(String nomeResponsavel) {
-		this.nomeResponsavel = nomeResponsavel;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
+	public void setCnpjCpf(String cnpjCpf) {
+		this.cnpjCpf = cnpjCpf;
 	}
 
 	public String getWhatsapp() {
@@ -92,12 +70,12 @@ public class EstabebelecimentoResponseDTO {
 		this.whatsapp = whatsapp;
 	}
 
-	public String getCep() {
-		return cep;
+	public String getSegmento() {
+		return segmento;
 	}
 
-	public void setCep(String cep) {
-		this.cep = cep;
+	public void setSegmento(String segmento) {
+		this.segmento = segmento;
 	}
 
 	public String getEnderecoCompleto() {
@@ -106,7 +84,6 @@ public class EstabebelecimentoResponseDTO {
 
 	public void setEnderecoCompleto(String enderecoCompleto) {
 		this.enderecoCompleto = enderecoCompleto;
-	}
-
+	}	
 	
 }

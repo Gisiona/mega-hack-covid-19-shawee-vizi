@@ -4,42 +4,33 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter @Setter
+@Getter @Setter @ToString
 public class EstabelecimentoRequestDTO {
-	
-	@JsonProperty("razao_social")
-	private String razaoSocial;
 	
 	@JsonProperty("nome_fantasia")
 	private String nomeFantasia;
 	
 	@JsonProperty("email")
 	private String email;
-	
-	@JsonProperty("nome_responsavel")
-	private String nomeResponsavel;
-	
-	@JsonProperty("telefone_fixo")
-	private String telefone;
+		
+	@JsonProperty("cnpj_cpf")
+	private String cnpjCpf;
 	
 	@JsonProperty("telefone_whatsapp")
 	private String whatsapp;
 	
-	@JsonProperty("cep_postal")
-	private String cep;
+	@JsonProperty("senha")
+	private String senha;
+	
+	@JsonProperty("segmento_negocio")
+	private String segmento;
 	
 	@JsonProperty("endereco_completo")
 	private String enderecoCompleto;
 	
-	public String getRazaoSocial() {
-		return razaoSocial;
-	}
-
-	public void setRazaoSocial(String razaoSocial) {
-		this.razaoSocial = razaoSocial;
-	}
-
+	
 	public String getNomeFantasia() {
 		return nomeFantasia;
 	}
@@ -56,20 +47,12 @@ public class EstabelecimentoRequestDTO {
 		this.email = email;
 	}
 
-	public String getNomeResponsavel() {
-		return nomeResponsavel;
+	public String getCnpjCpf() {
+		return cnpjCpf;
 	}
 
-	public void setNomeResponsavel(String nomeResponsavel) {
-		this.nomeResponsavel = nomeResponsavel;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
+	public void setCnpjCpf(String cnpjCpf) {
+		this.cnpjCpf = cnpjCpf;
 	}
 
 	public String getWhatsapp() {
@@ -80,12 +63,20 @@ public class EstabelecimentoRequestDTO {
 		this.whatsapp = whatsapp;
 	}
 
-	public String getCep() {
-		return cep;
+	public String getSenha() {
+		return senha;
 	}
 
-	public void setCep(String cep) {
-		this.cep = cep;
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+
+	public String getSegmento() {
+		return segmento;
+	}
+
+	public void setSegmento(String segmento) {
+		this.segmento = segmento;
 	}
 
 	public String getEnderecoCompleto() {
@@ -95,6 +86,5 @@ public class EstabelecimentoRequestDTO {
 	public void setEnderecoCompleto(String enderecoCompleto) {
 		this.enderecoCompleto = enderecoCompleto;
 	}
-
 	
 }
