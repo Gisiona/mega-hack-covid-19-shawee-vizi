@@ -30,7 +30,18 @@ public class EstabelecimentoRequestDTO {
 	@JsonProperty("endereco_completo")
 	private String enderecoCompleto;
 	
+	@JsonProperty("descricao_negocio")
+	private String descricao;
 	
+	
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
 	public String getNomeFantasia() {
 		return nomeFantasia;
 	}

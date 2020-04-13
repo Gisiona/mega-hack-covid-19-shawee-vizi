@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.vizi.dto.request.EstabelecimentoRequestDTO;
 import br.com.vizi.dto.response.EstabebelecimentoResponseDTO;
@@ -68,6 +70,7 @@ public class EstabelecimentoProcessor implements IEstabelecimentoProcessor {
 		
 	}
 
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public EstabebelecimentoResponseDTO adicionar(EstabelecimentoRequestDTO request) throws Exception {
 		
 		EstabebelecimentoResponseDTO dto = null;
@@ -82,6 +85,7 @@ public class EstabelecimentoProcessor implements IEstabelecimentoProcessor {
 			esta.setCnpjCpf(request.getCnpjCpf());
 			esta.setSenha(request.getSenha());
 			esta.setSegmento(request.getSegmento());
+			esta.setDescricao(request.getDescricao());
 			
 			Estabelecimento response = estabelecimentoRepository.save(esta);
 			

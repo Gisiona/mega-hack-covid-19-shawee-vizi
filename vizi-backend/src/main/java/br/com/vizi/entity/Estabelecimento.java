@@ -42,8 +42,7 @@ public class Estabelecimento {
 	
 	@NotBlank
 	private String enderecoCompleto;
-	
-	@NotBlank
+		
 	private boolean isAtivo;
 	
 	@NotBlank
