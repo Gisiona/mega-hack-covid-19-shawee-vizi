@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.vizi.dto.request.EstabelecimentoRequestDTO;
-import br.com.vizi.dto.response.EstabebelecimentoResponseDTO;
+import br.com.vizi.dto.request.EstabelecimentoRequestDto;
+import br.com.vizi.dto.response.EstabebelecimentoResponseDto;
 import br.com.vizi.entity.Estabelecimento;
 import br.com.vizi.processor.IEstabelecimentoProcessor;
 import br.com.vizi.repository.EstabelecimentoRepository;
@@ -21,13 +21,13 @@ public class EstabelecimentoProcessor implements IEstabelecimentoProcessor {
 	@Autowired
 	private EstabelecimentoRepository estabelecimentoRepository;
 	
-	public EstabebelecimentoResponseDTO listaEstabelecimentoPorId(Long id) throws Exception {
+	public EstabebelecimentoResponseDto listaEstabelecimentoPorId(Long id) throws Exception {
 		try {
 			Optional<Estabelecimento> response = estabelecimentoRepository.findById(id);
-			EstabebelecimentoResponseDTO dto = null;
+			EstabebelecimentoResponseDto dto = null;
 			
 			if(response.isPresent()) {
-				dto = new EstabebelecimentoResponseDTO();
+				dto = new EstabebelecimentoResponseDto();
 				dto.setId(response.get().getId());
 				dto.setEmail(response.get().getEmail());
 				dto.setEnderecoCompleto(response.get().getEnderecoCompleto());
@@ -42,15 +42,15 @@ public class EstabelecimentoProcessor implements IEstabelecimentoProcessor {
 		}		
 	}
 
-	public List<EstabebelecimentoResponseDTO> listaEstabelecimentos() throws Exception {
+	public List<EstabebelecimentoResponseDto> listaEstabelecimentos() throws Exception {
 		try {
-			EstabebelecimentoResponseDTO dto = null;
-			List<EstabebelecimentoResponseDTO> dtos = new ArrayList<EstabebelecimentoResponseDTO>();
+			EstabebelecimentoResponseDto dto = null;
+			List<EstabebelecimentoResponseDto> dtos = new ArrayList<EstabebelecimentoResponseDto>();
 			List<Estabelecimento> lista = estabelecimentoRepository.findAll();
 			
 			if(lista.size() > 0 ) {
 				for (Estabelecimento response : lista) {
-					dto = new EstabebelecimentoResponseDTO();
+					dto = new EstabebelecimentoResponseDto();
 					dto.setId(response.getId());
 					dto.setEmail(response.getEmail());
 					dto.setEnderecoCompleto(response.getEnderecoCompleto());
@@ -71,9 +71,9 @@ public class EstabelecimentoProcessor implements IEstabelecimentoProcessor {
 	}
 
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public EstabebelecimentoResponseDTO adicionar(EstabelecimentoRequestDTO request) throws Exception {
+	public EstabebelecimentoResponseDto adicionar(EstabelecimentoRequestDto request) throws Exception {
 		
-		EstabebelecimentoResponseDTO dto = null;
+		EstabebelecimentoResponseDto dto = null;
 		try {
 			Estabelecimento esta = new Estabelecimento();
 			esta.setAtivo(true);			
@@ -89,7 +89,7 @@ public class EstabelecimentoProcessor implements IEstabelecimentoProcessor {
 			
 			Estabelecimento response = estabelecimentoRepository.save(esta);
 			
-			dto = new EstabebelecimentoResponseDTO();
+			dto = new EstabebelecimentoResponseDto();
 			dto.setId(response.getId());
 			dto.setEmail(response.getEmail());
 			dto.setEnderecoCompleto(response.getEnderecoCompleto());

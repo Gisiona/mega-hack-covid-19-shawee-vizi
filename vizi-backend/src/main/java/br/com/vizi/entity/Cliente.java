@@ -17,16 +17,15 @@ public class Cliente {
 
 	@Id 
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
+	private Long id;	
 	private String nome;
-	private String apelido;
 	private String email;
 	private String cpf;
 	private String whatsapp;
 	private String cep;
 	private String enderecoCompleto;
 	private LocalDate dataNascimento;
+	private LocalDate dataCadastro;
 	private boolean isAtivo;
 	
 	
@@ -42,12 +41,7 @@ public class Cliente {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public String getApelido() {
-		return apelido;
-	}
-	public void setApelido(String apelido) {
-		this.apelido = apelido;
-	}
+	
 	public String getEmail() {
 		return email;
 	}
@@ -89,5 +83,11 @@ public class Cliente {
 	}
 	public void setAtivo(boolean isAtivo) {
 		this.isAtivo = isAtivo;
+	}
+	public LocalDate getDataCadastro() {
+		return dataCadastro;
+	}
+	public void setDataCadastro(LocalDate dataCadastro) {
+		this.dataCadastro = dataCadastro;
 	}
 }

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.vizi.dto.request.EstabelecimentoRequestDTO;
-import br.com.vizi.dto.response.EstabebelecimentoResponseDTO;
+import br.com.vizi.dto.request.EstabelecimentoRequestDto;
+import br.com.vizi.dto.response.EstabebelecimentoResponseDto;
 import br.com.vizi.processor.IEstabelecimentoProcessor;
 
 @RestController
@@ -22,17 +22,17 @@ public class EstabelecimentoController {
 	private IEstabelecimentoProcessor estabelecimentoProcessor;
 	
 	@GetMapping()
-	public List<EstabebelecimentoResponseDTO> listaEstabelecimentos() throws Exception{		
+	public List<EstabebelecimentoResponseDto> listaEstabelecimentos() throws Exception{		
 		return estabelecimentoProcessor.listaEstabelecimentos();
 	}
 	
 	@GetMapping("/{id}")
-	public EstabebelecimentoResponseDTO listaEstabelecimentoPorId(@PathVariable("id") Long id) throws Exception{		
+	public EstabebelecimentoResponseDto listaEstabelecimentoPorId(@PathVariable("id") Long id) throws Exception{		
 		return estabelecimentoProcessor.listaEstabelecimentoPorId(id);
 	}
 	
 	@PostMapping()
-	public EstabebelecimentoResponseDTO adicionarEstabelecimento(@RequestBody EstabelecimentoRequestDTO request) throws Exception{		
+	public EstabebelecimentoResponseDto adicionarEstabelecimento(@RequestBody EstabelecimentoRequestDto request) throws Exception{		
 		return estabelecimentoProcessor.adicionar(request);
 	}
 	

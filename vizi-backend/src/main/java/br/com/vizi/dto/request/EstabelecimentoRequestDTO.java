@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter @ToString
-public class EstabelecimentoRequestDTO {
+public class EstabelecimentoRequestDto {
 	
 	@JsonProperty("nome_fantasia")
 	private String nomeFantasia;

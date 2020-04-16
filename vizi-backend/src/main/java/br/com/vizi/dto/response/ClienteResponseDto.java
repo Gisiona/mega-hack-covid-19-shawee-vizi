@@ -2,33 +2,28 @@ package br.com.vizi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Getter;
-import lombok.Setter;
+public class ClienteResponseDto {
 
-@Getter @Setter
-public class EstabebelecimentoResponseDto {
-	
 	@JsonProperty("codigo")
 	private Long id;
 	
-	@JsonProperty("nome_fantasia")
-	private String nomeFantasia;
+	@JsonProperty("nome")
+	private String nome;
 	
 	@JsonProperty("email")
 	private String email;
-		
-	@JsonProperty("cnpj_cpf")
-	private String cnpjCpf;
 	
-	@JsonProperty("telefone_whatsapp")
+	@JsonProperty("cpf")
+	private String cpf;
+	
+	@JsonProperty("celular_whatsapp")
 	private String whatsapp;
-		
-	@JsonProperty("segmento_negocio")
-	private String segmento;
+	
+	@JsonProperty("cep")
+	private String cep;
 	
 	@JsonProperty("endereco_completo")
 	private String enderecoCompleto;
-	
 	
 	public Long getId() {
 		return id;
@@ -38,12 +33,12 @@ public class EstabebelecimentoResponseDto {
 		this.id = id;
 	}
 
-	public String getNomeFantasia() {
-		return nomeFantasia;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setNomeFantasia(String nomeFantasia) {
-		this.nomeFantasia = nomeFantasia;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public String getEmail() {
@@ -54,12 +49,12 @@ public class EstabebelecimentoResponseDto {
 		this.email = email;
 	}
 
-	public String getCnpjCpf() {
-		return cnpjCpf;
+	public String getCpf() {
+		return cpf;
 	}
 
-	public void setCnpjCpf(String cnpjCpf) {
-		this.cnpjCpf = cnpjCpf;
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 
 	public String getWhatsapp() {
@@ -70,12 +65,12 @@ public class EstabebelecimentoResponseDto {
 		this.whatsapp = whatsapp;
 	}
 
-	public String getSegmento() {
-		return segmento;
+	public String getCep() {
+		return cep;
 	}
 
-	public void setSegmento(String segmento) {
-		this.segmento = segmento;
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
 
 	public String getEnderecoCompleto() {
@@ -84,6 +79,6 @@ public class EstabebelecimentoResponseDto {
 
 	public void setEnderecoCompleto(String enderecoCompleto) {
 		this.enderecoCompleto = enderecoCompleto;
-	}	
-	
+	}
+
 }
