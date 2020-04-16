@@ -1,5 +1,7 @@
 package br.com.vizi.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,4 +33,12 @@ public class ClienteController {
 		ClienteResponseDto response = clienteProcessor.adicionar(request);
 		return ResponseEntity.ok(response);	
 	}
+	
+	@GetMapping()
+	public ResponseEntity<List<ClienteResponseDto>> consultarTodos() {
+		List<ClienteResponseDto> response = clienteProcessor.consultarTodos();
+		return ResponseEntity.ok(response);	
+	}
 }
+
+

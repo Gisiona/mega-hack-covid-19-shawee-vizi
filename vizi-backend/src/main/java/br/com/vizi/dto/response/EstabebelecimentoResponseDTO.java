@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class EstabebelecimentoResponseDto {
+public class EstabebelecimentoResponseDTO {
 	
 	@JsonProperty("codigo")
 	private Long id;

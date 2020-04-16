@@ -1,6 +1,8 @@
 package br.com.vizi.processor.impl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,6 +45,27 @@ public class ClienteProcessor implements IClienteProcessor {
 		response.setNome(resp.getNome());
 		response.setWhatsapp(resp.getWhatsapp());
 		
+		return response;
+	}
+
+	@Override
+	public List<ClienteResponseDto> consultarTodos() {
+		ClienteResponseDto resp = null;
+		List<ClienteResponseDto> response = new ArrayList<ClienteResponseDto>();
+		
+		List<Cliente> clientes = clienteRepository.findAll();
+		
+		for (Cliente cliente : clientes) {
+			resp = new ClienteResponseDto();
+			resp.setCep(cliente.getCep());
+			resp.setCpf(cliente.getCpf());
+			resp.setEmail(cliente.getEmail());
+			resp.setEnderecoCompleto(cliente.getEnderecoCompleto());
+			resp.setId(cliente.getId());
+			resp.setNome(cliente.getNome());
+			resp.setWhatsapp(cliente.getWhatsapp());
+			response.add(resp);
+		}
 		return response;
 	}
 
