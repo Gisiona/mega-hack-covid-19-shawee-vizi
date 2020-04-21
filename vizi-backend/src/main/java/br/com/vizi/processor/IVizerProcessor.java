@@ -13,4 +13,6 @@ public interface IVizerProcessor {
 
 	List<VizerResponseDto> consultarTodos() throws Exception;
 
+	VizerResponseDto atualizar(VizerRequestDto request, Long id) throws Exception;
+
 }

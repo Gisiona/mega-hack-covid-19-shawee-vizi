@@ -8,24 +8,6 @@ import br.com.vizi.entity.Vizer;
 
 public class VizerResponseDto {
 	
-	public VizerResponseDto(Long id, String nomeVizer, String apelido, String email, String cpf,
-			String telefoneWhatsapp, String cep, String enderecoCompleto, LocalDate dataNascimento,
-			LocalDate dataCadastro, boolean isAtivo) {
-		super();
-		this.id = id;
-		this.nomeVizer = nomeVizer;
-		this.apelido = apelido;
-		this.email = email;
-		this.cpf = cpf;
-		this.telefoneWhatsapp = telefoneWhatsapp;
-		this.cep = cep;
-		this.enderecoCompleto = enderecoCompleto;
-		this.dataNascimento = dataNascimento;
-		this.dataCadastro = dataCadastro;
-		this.isAtivo = isAtivo;
-	}
-
-	
 	public VizerResponseDto(Vizer entity) {
 		super();
 		this.id = entity.getId();
@@ -42,7 +24,6 @@ public class VizerResponseDto {
 	}
 
 	
-
 	@JsonProperty("codigo")
 	private Long id;
 	
@@ -55,13 +36,13 @@ public class VizerResponseDto {
 	@JsonProperty("email")
 	private String email;
 	
-	@JsonProperty("cpf_cnpj")	
+	@JsonProperty("cpf")	
 	private String cpf;
 	
 	@JsonProperty("telefone_whatsapp")
 	private String telefoneWhatsapp;
 	
-	@JsonProperty("cep_residencia")
+	@JsonProperty("cep")
 	private String cep;
 	
 	@JsonProperty("endereco_completo")

@@ -109,7 +109,7 @@ public class Vizer {
 	public Vizer() {}
 	
 		
-	public Vizer (VizerRequestDto dto) {
+	public Vizer(VizerRequestDto dto) {
 		this.nomeVizer = dto.getNomeVizer();
 		this.apelido = dto.getApelido();
 		this.email = dto.getEmail();

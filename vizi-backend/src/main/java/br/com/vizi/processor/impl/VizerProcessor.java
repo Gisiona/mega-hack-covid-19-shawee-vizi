@@ -1,19 +1,11 @@
 package br.com.vizi.processor.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
-
-import com.fasterxml.jackson.core.io.UTF32Reader;
 
 import br.com.vizi.dto.request.VizerRequestDto;
 import br.com.vizi.dto.response.VizerResponseDto;
@@ -45,9 +37,8 @@ public class VizerProcessor implements IVizerProcessor {
 			
 			if(vizer.isPresent()) {
 				return new VizerResponseDto(vizer.get());
-			}else {
-				throw new Exception("Nenhum registro encontrado");
 			}
+			return null;
 		} catch (Exception e) {
 			throw new Exception("Erro ao consultar vizer. ERRO: " + e.getMessage());
 		}
@@ -58,16 +49,38 @@ public class VizerProcessor implements IVizerProcessor {
 		try {
 			List<Vizer> vizers = vizerRepository.findAll();
 			List<VizerResponseDto> dtos = new ArrayList<VizerResponseDto>();
+			
 			if(vizers.size() >= 1) {
 				for (Vizer vizer : vizers) {
 					dtos.add(new VizerResponseDto(vizer));
 				}
 				return dtos;
-			}else {
-				throw new Exception("Nenhum registro encontrado");
 			}
+			
+			return null;
 		} catch (Exception e) {
 			throw new Exception("Erro ao consultar vizer. ERRO: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public VizerResponseDto atualizar(VizerRequestDto request, Long id) throws Exception {
+		try {
+			Optional<Vizer> vizer = vizerRepository.findById(id);
+			Vizer viz = null;
+			
+			if(vizer.isPresent()) {
+				viz = vizer.get();
+				viz = new Vizer(request);
+				viz = vizerRepository.saveAndFlush(viz);
+			}else {
+				throw new Exception("Registro não localizado");
+			}
+			
+			return new VizerResponseDto(viz);
+			
+		} catch (Exception e) {
+			throw new Exception("Erro ao atualizar vizer. ERRO: " + e.getMessage());
 		}
 	}
 
