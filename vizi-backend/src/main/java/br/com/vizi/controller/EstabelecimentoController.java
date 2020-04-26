@@ -37,9 +37,5 @@ public class EstabelecimentoController {
 	public EstabebelecimentoResponseDTO adicionarEstabelecimento(@RequestBody EstabelecimentoRequestDTO request) throws Exception{		
 		return estabelecimentoProcessor.adicionar(request);
 	}
-	
-	@GetMapping("/healthcheck")
-	public String healthcheck(){		
-		return "200 OK";
-	}
+		
 }

@@ -25,11 +25,6 @@ public class VizerController {
 	@Autowired
 	private IVizerProcessor vizerProcessor;
 	
-	@GetMapping("/healthcheck")
-	public String healthcheck(){		
-		return "200 OK";
-	}
-	
 	@PostMapping()
 	public ResponseEntity<VizerResponseDto> adicionarVizer(@RequestBody VizerRequestDto request) throws Exception{		
 		return new ResponseEntity<>(vizerProcessor.adicionar(request), new HttpHeaders(), HttpStatus.CREATED);
