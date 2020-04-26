@@ -1,5 +1,7 @@
 package br.com.vizi.dto.response;
 
+import javax.validation.constraints.Email;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
@@ -14,6 +16,7 @@ public class EstabebelecimentoResponseDTO {
 	@JsonProperty("nome_fantasia")
 	private String nomeFantasia;
 	
+	@Email(message = "O e-mail está inválido")
 	@JsonProperty("email")
 	private String email;
 		
