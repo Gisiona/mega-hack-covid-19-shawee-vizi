@@ -1,3 +1,3 @@
 # mega-hack-covid-19-shawee-vizi
 Projetos desenvolvidos durante o Mega Hack COVID-19 organizado pela Shawee
-![capa do curso](https://pin.it/613wcxH)
+![capa do curso](https://i.pinimg.com/originals/c1/81/88/c181888977bb85bfa8fcb6247e769940.png)
