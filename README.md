@@ -1,5 +1,5 @@
 # ViziApp
-Projetos desenvolvidos durante o Mega Hack COVID-19 organizado pela Shawee
+Projeto desenvolvido durante o MegaHack COVID-19 organizado pela Shawee
 
 Link: https://viziapp.herokuapp.com/
 
